@@ -6,9 +6,9 @@ A tiny ES5 base class featuring clean disposal of bound resources.
 It also provides a simple API for easier debugging and diagnostics.
 All this works in both back-end and front-end environments.
 
-Processing DOM events or similar in OO code implies correct releasing those.
-Similarly, class instances bound to other objects may need special care to prevent
-dreaded memory leaks from occurring. The _**`TidyOwner`**_ base class interface of
+Processing DOM events or similar in OO code implies correct set-up and releasing of event handlers.
+Also, cross-referenced class instances and other objects need special care to prevent
+the dreaded memory leaks. The _**`TidyOwner`**_ base class interface of
 _**`own`**_ property and _**`dispose()`**_ method may save you from writing boring boilerplate code
 and possibly making mistakes in those cases.
 
@@ -97,4 +97,3 @@ The same factory function is default export from the sub-package (see example be
   debug.enable('*')
   debug('natively')('yay!')             // --> 'natively yay! +0ms'
 ```
-In the example above, the factory method was imported and executed immediately.

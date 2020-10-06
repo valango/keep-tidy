@@ -2,15 +2,17 @@
   "name": "keep-tidy",
   "version": "0.1.0",
   "description": "Simple utilities and ES5 base class for robust and maintainable code.",
-  "main": "src",
+  "main": "index.js",
   "homepage": "",
   "repository": "http://github.com/valango/keep-tidy.git",
   "author": "Villem Alango <villem.alango@gmail.com>",
   "license": "MIT",
   "keywords": [],
   "files": [
+    "debug/*.js",
+    "helpers.js",
     "index.js",
-    "src/*.js"
+    "Owner.js"
   ],
   "scripts": {
     "clean": "rimraf *.tmp *.log* reports",

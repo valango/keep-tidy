@@ -2,9 +2,9 @@
 module.exports = {
   bail: 1,
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.js'],
+  collectCoverageFrom: ['**/*.js', '!.[a-z]*', '!*.config.js'],
   coverageDirectory: 'reports',
-  coveragePathIgnorePatterns: ['reports', 'test'],
+  coveragePathIgnorePatterns: ['<rootDir>/reports', '<rootDir>/test'],
   // coverageProvider: 'babel',
   verbose: true
 }

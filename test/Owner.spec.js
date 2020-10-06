@@ -3,7 +3,17 @@ const Own = require('../').OwnerClass
 
 let on = [], off = [], a
 
+const em0 = {
+  'on': (ev, fn) => on.push({ ev, fn }),
+  'off': (ev, fn) => off.push({ ev, fn })
+}
+
 const em1 = {
+  'addEventListener': (ev, fn) => on.push({ ev, fn }),
+  'removeEventListener': (ev, fn) => off.push({ ev, fn })
+}
+
+const em2 = {
   '$on': (ev, fn) => on.push({ ev, fn }),
   '$off': (ev, fn) => off.push({ ev, fn })
 }
@@ -36,8 +46,8 @@ it('should have immutable properties', () => {
 
 it('should register', () => {
   const fn = () => 0
-  a.ownOn('ev1', 'handler', em1).ownOn('ev1', fn, em1).ownOn('ev2', fn, em1)
-  expect(on[0].ev).toBe('ev1')
+  a.ownOn('ev0', 'handler', em0).ownOn('ev1', fn, em1).ownOn('ev2', fn, em2)
+  expect(on[0].ev).toBe('ev0')
   expect(on[0].fn).not.toBe(fn)
   expect(on[1].ev).toBe('ev1')
   expect(on[1].fn).toBe(fn)
@@ -53,9 +63,8 @@ it('should ignore unfit un-register', () => {
 })
 
 it('should un-register selectively', () => {
-  a.ownOff('ev2', em1)
+  a.ownOff('ev2', em2)
   expect(off.length).toBe(1)
-  off = []
 })
 
 it('should re-generate debug method', () => {
@@ -65,6 +74,7 @@ it('should re-generate debug method', () => {
 })
 
 it('should dispose', () => {
+  off = []
   a.dispose()
   expect(Object.keys(a.own).length).toBe(0)
   expect(off.length).toBe(2)

@@ -5,6 +5,13 @@ const assert = require('assert-fine')
 const Debug = require('./debug')
 const noop = () => undefined
 
+//  Event handler registering / un-registering API-s (exported and can be changed).
+const emitterAPI = [
+  ['on', 'off'],
+  ['addEventListener', 'removeEventListener'],
+  ['$on', '$off']
+]
+
 let seed = 0
 
 const readOnly = (self, name, value) => {
@@ -63,7 +70,7 @@ function ownOff (event, emitter = undefined) {
 }
 
 const guessEmitterAPI = (emitter) => {
-  for (const [a, b] of [['addEventListener', 'removeEventListener'], ['$on', '$off']]) {
+  for (const [a, b] of exports.emitterAPI) {
     if (typeof emitter[a] === 'function' && typeof emitter[b] === 'function') {
       return [a, b]
     }
@@ -75,7 +82,7 @@ const guessEmitterAPI = (emitter) => {
  * @param {string} event
  * @param {string|function} handler or instance method name.
  * @param {Object} emitter
- * @param {[string, string] | undefined} emitter API method names.
+ * @param {[string, string] | undefined} methods - emitter API method names.
  * @returns {this}
  */
 function ownOn (event, handler, emitter, methods = undefined) {
@@ -108,4 +115,4 @@ function dispose () {
   this.ownOff(undefined, undefined)
 }
 
-module.exports = { dispose, initialize, ownOff, ownOn }
+exports = module.exports = { dispose, emitterAPI, initialize, ownOff, ownOn }
