@@ -1,7 +1,10 @@
 'use strict'
 let debug, enabled, nope, out, target, api
 
-const print = (...args) => out.push([enabled, ...args])
+const print = function (a, b) {
+  out.push([enabled, a, b])
+}
+
 const init = env => {
   jest.resetModules()
   process.env.NODE_ENV = env

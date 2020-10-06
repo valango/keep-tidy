@@ -1,20 +1,21 @@
 //  src/helpers.js -  helper functions for class and Vue.js mix-in.
 'use strict'
 
-const assert = require('assert-fine')
-const Debug = require('./debug')
-const noop = () => undefined
+var assert = require('assert-fine')
+var Debug = require('./debug')
+var noop = function () {
+}
 
 //  Event handler registering / un-registering API-s (exported and can be changed).
-const emitterAPI = [
+var emitterAPI = [
   ['on', 'off'],
   ['addEventListener', 'removeEventListener'],
   ['$on', '$off']
 ]
 
-let seed = 0
+var seed = 0
 
-const readOnly = (self, name, value) => {
+var readOnly = function (self, name, value) {
   Object.defineProperty(self, name, { enumerable: true, value })
 }
 
@@ -33,7 +34,7 @@ const readOnly = (self, name, value) => {
  * @param {string=} instanceTag     to override the default ownTag property.
  */
 function initialize (instanceTag = undefined) {
-  const classTag = this.constructor ? this.constructor.name : 'object'
+  var classTag = this.constructor ? this.constructor.name : 'object'
   assert(!instanceTag || typeof instanceTag === 'string', `${instanceTag}.initialize: bad tag`)
 
   this.debugOn = function (yes = undefined) {
@@ -58,10 +59,10 @@ function initialize (instanceTag = undefined) {
  * @returns {this}
  */
 function ownOff (event, emitter = undefined) {
-  const array = this.$_Owner_handlers
+  var array = this.$_Owner_handlers
 
-  for (let i = array.length; --i >= 0;) {
-    const [ev, em, fn, off] = array[i]
+  for (var i = array.length; --i >= 0;) {
+    var [ev, em, fn, off] = array[i]
     if ((event && ev !== event) || (emitter && em !== emitter)) continue
     em[off](ev, fn)
     array.splice(i, 1)
@@ -69,8 +70,8 @@ function ownOff (event, emitter = undefined) {
   return this
 }
 
-const guessEmitterAPI = (emitter) => {
-  for (const [a, b] of exports.emitterAPI) {
+var guessEmitterAPI = function (emitter) {
+  for (var [a, b] of exports.emitterAPI) {
     if (typeof emitter[a] === 'function' && typeof emitter[b] === 'function') {
       return [a, b]
     }
@@ -86,12 +87,16 @@ const guessEmitterAPI = (emitter) => {
  * @returns {this}
  */
 function ownOn (event, handler, emitter, methods = undefined) {
-  const api = methods || guessEmitterAPI(emitter)
-  let fn = handler, hn
+  var api = methods || guessEmitterAPI(emitter)
+  var fn = handler, hn
 
   if (typeof fn !== 'function') {
     assert(typeof (hn = this[fn]) === 'function', `ownOn('%s', '%s') - not a function`)
-    fn = (...args) => hn.apply(this, args)
+    var self = this
+
+    fn = function () {
+      return hn.apply(self, arguments)
+    }
   }
   assert(api, `onOwn('${event}'): unknown API`)
   emitter[api[0]](event, fn)
@@ -103,8 +108,8 @@ function ownOn (event, handler, emitter, methods = undefined) {
  * Method to be called before the instance is destroyed.
  */
 function dispose () {
-  for (const key of Object.keys(this.own)) {
-    const value = this.own[key]
+  for (var key of Object.keys(this.own)) {
+    var value = this.own[key]
     if (value && typeof value === 'object' &&
       typeof value.dispose === 'function') {
       value.dispose()

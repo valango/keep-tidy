@@ -97,3 +97,8 @@ The same factory function is default export from the sub-package (see example be
   debug.enable('*')
   debug('natively')('yay!')             // --> 'natively yay! +0ms'
 ```
+
+## Compatibility
+
+The package should be ECMAScript 2015 and it should run without virtually anywhere.
+If you find any issues, please do not hesitate to report.

@@ -7,7 +7,22 @@
   "repository": "http://github.com/valango/keep-tidy.git",
   "author": "Villem Alango <villem.alango@gmail.com>",
   "license": "MIT",
-  "keywords": [],
+  "keywords": [
+    "baseclass",
+    "code",
+    "debug",
+    "debugging",
+    "ES5",
+    "ES2015",
+    "ECMAScript 2015",
+    "avoid",
+    "leaks",
+    "event",
+    "handler",
+    "disposal",
+    "back-end",
+    "front-end"
+ ],
   "files": [
     "debug/*.js",
     "helpers.js",

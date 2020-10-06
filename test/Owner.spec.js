@@ -21,11 +21,11 @@ const em2 = {
 class A extends Own {
   constructor (name = undefined) {
     super(name)
-    this.count = 0
+    this.calls = []
   }
 
   handler () {
-    ++this.count
+    this.calls.push(Array.from(arguments))
   }
 }
 
@@ -53,8 +53,8 @@ it('should register', () => {
   expect(on[1].fn).toBe(fn)
   expect(on[2].ev).toBe('ev2')
   expect(on[2].fn).toBe(fn)
-  on[0].fn()
-  expect(a.count).toBe(1)
+  on[0].fn(3, 5, 6)
+  expect(a.calls).toEqual([[3, 5, 6]])
 })
 
 it('should ignore unfit un-register', () => {

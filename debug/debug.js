@@ -1,13 +1,15 @@
 'use strict'
 
-const debug = require('debug')
+var debug = require('debug')
 
 //  Todo: re-think the masking.
-const _mask = process.env.DEBUG
-let _enabled = _mask
+var noop = function () {
+}
+var _mask = process.env.DEBUG
+var _enabled = _mask
 
-const factory = (signature, yes) => {
-  const func = yes === false ? () => undefined : factory.debug(signature)
+var factory = function (signature, yes) {
+  var func = yes === false ? noop : factory.debug(signature)
   if (yes === true) func.enabled = true
   return func
 }

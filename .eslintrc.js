@@ -1,7 +1,7 @@
 //	@link (https://eslint.org/docs/user-guide/configuring)
 module.exports = {
   env: {
-    es2020: true,
+    // es2020: true,
     node: true
   },
 
@@ -10,7 +10,7 @@ module.exports = {
   ],
 
   parserOptions: {
-    // ecmaVersion: 2015,
+    ecmaVersion: 2015,
     // parser: 'babel-eslint'
     sourceType: 'module'
   },

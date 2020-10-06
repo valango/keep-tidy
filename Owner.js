@@ -1,8 +1,8 @@
 //  src/Owner   --  a helpful base class.
 'use strict'
 
-const assert = require('assert-fine')
-const { dispose, initialize, ownOff, ownOn } = require('./helpers')
+var assert = require('assert-fine')
+var { dispose, initialize, ownOff, ownOn } = require('./helpers')
 
 /**
  * @class OwnerClass

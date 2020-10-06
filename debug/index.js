@@ -1,13 +1,16 @@
 'use strict'
-let api
+var api
 
 if (process.env.NODE_ENV !== 'production') {
   api = require('./debug')
 } else {
   //  eslint-disable-next-line
-  const noop = (...p) => undefined
+  var noop = function () {
+  }
   //  eslint-disable-next-line
-  api = (...p) => noop
+  api = function () {
+    return noop
+  }
   api.debug = noop
 }
 
