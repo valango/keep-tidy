@@ -8,7 +8,8 @@ const print = function (a, b) {
 const init = env => {
   jest.resetModules()
   process.env.NODE_ENV = env
-  target = (api = require('..')).debugMe
+  api = require('..')
+  target = api.debugMe
   out = []
   enabled = undefined
   target.debug = signature => print.bind(0, signature)
@@ -37,8 +38,8 @@ describe('default mode', () => {
     expect(target.enabled).toBe(false)
     debug('x')
     expect(out[1]).toEqual([undefined, 'TEST', 'x'])
-    api.debug.enable('*')
-    api.debug('direct')('surprise')
+    // api.debug.enable('*')
+    // api.debug('direct')('surprise')
   })
 })
 

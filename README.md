@@ -100,5 +100,5 @@ The same factory function is default export from the sub-package (see example be
 
 ## Compatibility
 
-The package should be ECMAScript 2015 and it should run without virtually anywhere.
+The package should be ECMAScript 2015 and it should run virtually anywhere.
 If you find any issues, please do not hesitate to report.
