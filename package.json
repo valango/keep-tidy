@@ -1,6 +1,6 @@
 {
   "name": "keep-tidy",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Simple utilities and ES5 base class for robust and maintainable code.",
   "main": "index.js",
   "homepage": "",
@@ -22,7 +22,7 @@
     "disposal",
     "back-end",
     "front-end"
- ],
+  ],
   "files": [
     "debug/*.js",
     "helpers.js",
