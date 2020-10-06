@@ -1,0 +1,36 @@
+{
+  "name": "keep-tidy",
+  "version": "0.1.0",
+  "description": "Simple utilities and ES5 base class for robust and maintainable code.",
+  "main": "src",
+  "homepage": "",
+  "repository": "http://github.com/valango/keep-tidy.git",
+  "author": "Villem Alango <villem.alango@gmail.com>",
+  "license": "MIT",
+  "keywords": [],
+  "files": [
+    "index.js",
+    "src/*.js"
+  ],
+  "scripts": {
+    "clean": "rimraf *.tmp *.log* reports",
+    "lint": "eslint .",
+    "purge": "npm run clean && rimraf node_modules",
+    "test": "jest",
+    "test:coverage": "codecov"
+  },
+  "dependencies": {
+    "assert-fine": "^1.0.3",
+    "debug": "^4.2.0"
+  },
+  "devDependencies": {
+    "codecov": "^3.8.0",
+    "eslint": "^7.10.0",
+    "jest": "^26.5.2",
+    "rimraf": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=10.15.1"
+  },
+  "private": false
+}
