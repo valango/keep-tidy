@@ -55,6 +55,7 @@ function initialize (className = undefined) {
   readOnly(this, 'ownTag', classTag + '#' + seed)
 
   this.$_Owner_handlers = []
+  this.$_Owner_free = -1      //  List of free entries in handlers.
 }
 
 /**
@@ -67,10 +68,13 @@ function ownOff (event, emitter = undefined) {
   var array = this.$_Owner_handlers
 
   for (var i = array.length; --i >= 0;) {
-    var [ev, em, fn, off] = array[i]
-    if ((event && ev !== event) || (emitter && em !== emitter)) continue
-    em[off](ev, fn)
-    array.splice(i, 1)    // Todo: delete contents instead of array elements.
+    var r = array[i], ev = r[0], em = r[1]  // const [ev, em, fn, off] = array[i]
+
+    if (!em || (event && ev !== event) || (emitter && em !== emitter)) continue
+    em[r[3]](ev, r[2])              //  Un-register the event handler.
+    r[0] = r[1] = r[2] = undefined  //  For speed, we don't use .splice()
+    r[3] = this.$_Owner_free
+    this.$_Owner_free = i
   }
   return this
 }
@@ -93,7 +97,7 @@ var guessEmitterAPI = function (emitter) {
  */
 function ownOn (event, handler, emitter, methods = undefined) {
   var api = methods || guessEmitterAPI(emitter)
-  var fn = handler, hn
+  var fn = handler, i, hn, r
 
   if (typeof fn !== 'function') {
     assert(typeof (hn = this[fn]) === 'function', `ownOn('%s', '%s') - not a function`)
@@ -105,7 +109,13 @@ function ownOn (event, handler, emitter, methods = undefined) {
   }
   assert(api, `onOwn('${event}'): unknown API`)
   emitter[api[0]](event, fn)
-  this.$_Owner_handlers.push([event, emitter, fn, api[1]])
+  if ((i = this.$_Owner_free) >= 0) {
+    r = this.$_Owner_handlers[i]
+    this.$_Owner_free = r[3]
+    r[0] = event, r[1] = emitter, r[2] = fn, r[3] = api[1]
+  } else {
+    this.$_Owner_handlers.push([event, emitter, fn, api[1]])
+  }
   return this
 }
 
