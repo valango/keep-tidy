@@ -30,13 +30,17 @@ var readOnly = function (self, name, value) {
  */
 
 /**
- * Constructor code.
- * @param {string=} instanceTag     to override the default ownTag property.
+ * This function should be normally called from class constructor.
+ *
+ * @param {string=} className   - to override the default ownTag property.
  */
-function initialize (instanceTag = undefined) {
+function initialize (className = undefined) {
   var classTag = this.constructor ? this.constructor.name : 'object'
-  assert(!instanceTag || typeof instanceTag === 'string', `${instanceTag}.initialize: bad tag`)
 
+  if (className) {
+    assert(typeof className === 'string', `${classTag}.initialize: bad className`)
+    classTag = className
+  }
   this.debugOn = function (yes = undefined) {
     if (yes === undefined) return this.debug && this.debug !== noop
     this.debug = yes ? Debug(this.ownTag, yes) : noop
@@ -44,12 +48,14 @@ function initialize (instanceTag = undefined) {
   }
   this.debug = noop
 
-  this.own = Object.create(null)
+  // this.own = Object.create(null)
+  readOnly(this, 'own', Object.create(null))
   readOnly(this, 'ownClass', classTag)
   readOnly(this, 'ownId', ++seed)
-  readOnly(this, 'ownTag', instanceTag || (classTag + '#' + seed))
+  readOnly(this, 'ownTag', classTag + '#' + seed)
 
   this.$_Owner_handlers = []
+  this.$_Owner_free = -1      //  List of free entries in handlers.
 }
 
 /**
@@ -62,10 +68,13 @@ function ownOff (event, emitter = undefined) {
   var array = this.$_Owner_handlers
 
   for (var i = array.length; --i >= 0;) {
-    var [ev, em, fn, off] = array[i]
-    if ((event && ev !== event) || (emitter && em !== emitter)) continue
-    em[off](ev, fn)
-    array.splice(i, 1)
+    var r = array[i], ev = r[0], em = r[1]  // const [ev, em, fn, off] = array[i]
+
+    if (!em || (event && ev !== event) || (emitter && em !== emitter)) continue
+    em[r[3]](ev, r[2])              //  Un-register the event handler.
+    r[0] = r[1] = r[2] = undefined  //  For speed, we don't use .splice()
+    r[3] = this.$_Owner_free
+    this.$_Owner_free = i
   }
   return this
 }
@@ -88,7 +97,7 @@ var guessEmitterAPI = function (emitter) {
  */
 function ownOn (event, handler, emitter, methods = undefined) {
   var api = methods || guessEmitterAPI(emitter)
-  var fn = handler, hn
+  var fn = handler, i, hn, r
 
   if (typeof fn !== 'function') {
     assert(typeof (hn = this[fn]) === 'function', `ownOn('%s', '%s') - not a function`)
@@ -100,7 +109,13 @@ function ownOn (event, handler, emitter, methods = undefined) {
   }
   assert(api, `onOwn('${event}'): unknown API`)
   emitter[api[0]](event, fn)
-  this.$_Owner_handlers.push([event, emitter, fn, api[1]])
+  if ((i = this.$_Owner_free) >= 0) {
+    r = this.$_Owner_handlers[i]
+    this.$_Owner_free = r[3]
+    r[0] = event, r[1] = emitter, r[2] = fn, r[3] = api[1]
+  } else {
+    this.$_Owner_handlers.push([event, emitter, fn, api[1]])
+  }
   return this
 }
 

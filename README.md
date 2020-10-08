@@ -48,35 +48,32 @@ The package exports the following API:
 Some parts can be loaded individually: `'owner-class/debug'` and `'owner-class/helpers'`.
 
 ### Baseclass
-`constructor TidyOwner([instanceTag : {string}])`
+`constructor TidyOwner([classNameOverride : string])`
 
 When using this baseclass, you'll avoid writing boilerplate code for releasing event handlers
-and freeing other resources.
-
-   * static/class method `assertHook` is a convenience shortcut for 
+and freeing other resources. Its interface consists of:
+   * **`assertHook`**<br />a class (not instance) method - a convenience shortcut for 
    [`assert.hook()`](https://github.com/valango/assert-fine).
-   * method `debug(...)  -` see [debugging](#debugging) for details.
-   * method `debugOn([*]): * -` on argument given, replaces `debug` method and returns instance
-   for chaining; without argument it returns boolean showing if debugging is enabled.
-   * method `dispose()   -` call this to free up all bound resources.
+   * **`debug`**`(...)`<br />see [debugging](#debugging) for details.
+   * **`debugOn`**`([*]): *`<br />for re-generating the `debug` method and returning _`this`_
+   for chaining, if argument supplied; otherwise returns _boolean_ showing if debugging is enabled.
+   * **`dispose`**`()`<br />call this to free up all bound resources.
    Base class method cleans the _**`own`**_ container, firing _`dispose`_ method of every
    object instance having it. Then it _un-registers all handlers_ set by _`ownOn`_ method.
-   * `function ownOff (event= : string, emitter= : Object) : this` -
+   * **`ownOff`**`(event= : string, emitter= : Object) : this`<br />
    un-registers handlers registered for matching (event, emitter) pairs.
    It is called by dispose(), so in most cases you don't need to call it explicitly.
-   * `function ownOn (event : string, handler, emitter, api=) : this` -
+   * **`ownOn`**`(event : string, handler, emitter, api=) : this`<br />
    registers _`event`_ _`handler`_ with _`emitter`_ object.
    If emitter API differs from `addEventListener/removeEventListener` or `$on/$off` or `on/off`,
    then you need explicitly define the API, like `['listenTo', 'ignore']`.
    The _`handler`_ parameter can be instance method name or a function.
-   * `property debugOn : {boolean|undefined}  -` see [debugging](#debugging) for details.
-   * `property own : {Object} -`
-   a keyed container for private data, that should be gracefully cleaned up.
-   * `property ownClass : {string} -` class name.
-   * `property ownId : {number}  -` globally unique class instance number.
-   * `property ownTag : {string}    -` set to `ownClass + '#' + ownId`.
+   * **`own`**`: Object`<br />a keyed container for private data, that should be gracefully cleaned up.
+   * **`ownClass`**`: string`<br />class name (read-only).
+   * **`ownId`**`: number`<br />globally unique class instance number(read-only).
+   * **`ownTag`**`: string`<br />is set to _`ownClass`_`+ '#' +`_`ownId`_ (read-only).
    
-The last three properties are _read-only_ properties; mutating those throws `TypeError`.
+Assigning a value to any instance property will throw `TypeError`.
 
 ### Debugging
 Debugging machinery uses [debug](https://github.com/visionmedia/debug])
