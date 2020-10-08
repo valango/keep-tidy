@@ -1,6 +1,6 @@
 {
   "name": "keep-tidy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple utilities and ES5 base class for robust and maintainable code.",
   "main": "index.js",
   "homepage": "",
