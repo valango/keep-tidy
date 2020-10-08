@@ -80,9 +80,11 @@ function ownOff (event, emitter = undefined) {
 }
 
 var guessEmitterAPI = function (emitter) {
-  for (var [a, b] of exports.emitterAPI) {
-    if (typeof emitter[a] === 'function' && typeof emitter[b] === 'function') {
-      return [a, b]
+  var i, api
+
+  for (i = 0; (api = exports.emitterAPI[i]) !== undefined; i += 1) {
+    if (typeof emitter[api[0]] === 'function' && typeof emitter[api[1]] === 'function') {
+      return [api[0], api[1]]
     }
   }
 }
@@ -123,7 +125,9 @@ function ownOn (event, handler, emitter, methods = undefined) {
  * Method to be called before the instance is destroyed.
  */
 function dispose () {
-  for (var key of Object.keys(this.own)) {
+  var i, key, keys = Object.keys(this.own)
+
+  for (i = 0; (key = keys[i]) !== undefined; i += 1) {
     var value = this.own[key]
     if (value && typeof value === 'object' &&
       typeof value.dispose === 'function') {
