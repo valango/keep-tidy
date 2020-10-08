@@ -30,13 +30,17 @@ var readOnly = function (self, name, value) {
  */
 
 /**
- * Constructor code.
- * @param {string=} instanceTag     to override the default ownTag property.
+ * This function should be normally called from class constructor.
+ *
+ * @param {string=} className   - to override the default ownTag property.
  */
-function initialize (instanceTag = undefined) {
+function initialize (className = undefined) {
   var classTag = this.constructor ? this.constructor.name : 'object'
-  assert(!instanceTag || typeof instanceTag === 'string', `${instanceTag}.initialize: bad tag`)
 
+  if (className) {
+    assert(typeof className === 'string', `${classTag}.initialize: bad className`)
+    classTag = className
+  }
   this.debugOn = function (yes = undefined) {
     if (yes === undefined) return this.debug && this.debug !== noop
     this.debug = yes ? Debug(this.ownTag, yes) : noop
@@ -44,10 +48,11 @@ function initialize (instanceTag = undefined) {
   }
   this.debug = noop
 
-  this.own = Object.create(null)
+  // this.own = Object.create(null)
+  readOnly(this, 'own', Object.create(null))
   readOnly(this, 'ownClass', classTag)
   readOnly(this, 'ownId', ++seed)
-  readOnly(this, 'ownTag', instanceTag || (classTag + '#' + seed))
+  readOnly(this, 'ownTag', classTag + '#' + seed)
 
   this.$_Owner_handlers = []
 }
@@ -65,7 +70,7 @@ function ownOff (event, emitter = undefined) {
     var [ev, em, fn, off] = array[i]
     if ((event && ev !== event) || (emitter && em !== emitter)) continue
     em[off](ev, fn)
-    array.splice(i, 1)
+    array.splice(i, 1)    // Todo: delete contents instead of array elements.
   }
   return this
 }

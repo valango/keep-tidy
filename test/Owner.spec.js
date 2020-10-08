@@ -30,7 +30,7 @@ class A extends Own {
 }
 
 it('should construct', () => {
-  expect(new A('Aa').ownTag).toBe('Aa')
+  expect(new A('Aa').ownTag).toBe('Aa#1')
   expect((a = new A()).ownTag).toBe('A#2')
   expect(a.debugOn()).toBe(false)
   expect(a.debug('a')).toBe(undefined)
